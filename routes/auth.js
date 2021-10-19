@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const User = require("../models/User");
 const CryptoJS = require("crypto-js");
+const jwt = require("jsonwebtoken");
 
 //REGISTER
 
@@ -41,9 +42,20 @@ router.post("/login", async (req, res) => {
       res.status(401).json("Password does not match");
     }
 
+    const accessToken = jwt.sign(
+      {
+        id: user._id,
+        isAdmin: user.isAdmin,
+      },
+      process.env.JWT_SEC,
+      { expiresIn: "3d" }
+    );
+
     const { password, ...other } = user._doc;
 
-    res.json(200).json(other);
+    res.json(200).json({ other, accessToken });
+
+    return other;
   } catch (error) {
     res.status(500).json(error);
   }
