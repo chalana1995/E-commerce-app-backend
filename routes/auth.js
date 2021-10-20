@@ -52,7 +52,8 @@ router.post("/login", async (req, res) => {
     );
 
     const { password, ...other } = user._doc;
-
+    console.log("====other=====", other);
+    console.log("===========accessToken=====", accessToken);
     res.json(200).json({ other, accessToken });
 
     return other;
